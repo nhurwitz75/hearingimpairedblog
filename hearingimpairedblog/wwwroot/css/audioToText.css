@@ -1,0 +1,24 @@
+﻿body {
+    margin: 0;
+}
+
+h1 {
+    font-family: 'Courier New', monospace;
+}
+
+label{
+    font: bold;
+    font-size: 24px;
+}
+
+button {
+    background-color: #FF1493;
+    font-size: 24px;
+    padding: 10px 24px;
+    border-radius: 4px;
+    box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
+}
+
+.response {
+    font-size: 16px;
+}
