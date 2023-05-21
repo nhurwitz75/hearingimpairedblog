@@ -1,6 +1,9 @@
+using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System;
+using System.ComponentModel.DataAnnotations;
+using System.Data;
 using System.IO;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -8,6 +11,7 @@ using System.Net.Http.Json;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace hearingimpairedblog.Pages
 {
@@ -15,25 +19,35 @@ namespace hearingimpairedblog.Pages
     {
         private static readonly HttpClient HttpClient = new HttpClient();
         static string API_Key = "7f64872363bb45b3bba69705e18d9e9e";
+        public string Transcript { get; set; }
 
-        public async void OnPost(IFormFile file)
+        public audioToTextModel() 
+        {
+            Transcript = "";
+        }   
+
+        public void OnPost(IFormFile file)
         {
             HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(API_Key);
 
-            // Get file path
-            var filePath = Path.GetTempFileName();
-            string newPath = System.IO.Path.Combine(Path.GetDirectoryName(filePath), file.FileName);
-            using (var stream = System.IO.File.Create(newPath))
+            var transcribeFileProcess = async () =>
             {
-                await file.CopyToAsync(stream);
-            }
+                // Get file path
+                var filePath = Path.GetTempFileName();
+                string newPath = System.IO.Path.Combine(Path.GetDirectoryName(filePath), file.FileName);
+                using (var stream = System.IO.File.Create(newPath))
+                {
+                    await file.CopyToAsync(stream);
+                }
 
-            // Upload File
-            var uploadedFileUrl = await UploadFileAsync(newPath);
+                // Upload File
+                var uploadedFileUrl = await UploadFileAsync(newPath);
 
-            // Transcribe File
-            var transcript = await GetTransciptAsync(uploadedFileUrl);
-            Console.WriteLine("Transcript:" + transcript);
+                // Transcribe File
+                return await GetTransciptAsync(uploadedFileUrl);       
+            };
+
+            Transcript = transcribeFileProcess.Invoke().Result;
         }
 
         private static async Task<string> UploadFileAsync(string path)
@@ -88,5 +102,7 @@ namespace hearingimpairedblog.Pages
                 }
             }
         }
+
     }
+
 }
