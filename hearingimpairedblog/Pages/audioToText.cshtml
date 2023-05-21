@@ -1,0 +1,27 @@
+﻿@page
+@model hearingimpairedblog.Pages.audioToTextModel
+@{
+    ViewData["Title"] = "Audio To Text";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Upload Audio to Transcribe:</h1>
+</div>
+<div class="container">
+    <div class="mb-3 mt-3">
+        <form method="post" enctype="multipart/form-data">
+            <div class="mb-3">
+                <label class ="form-label" for="audio">Upload File </label>
+                <input type="file" name="file" class="form-control" accept="audio/*" />
+            </div>
+            <div class="mb-3">
+                <button type="submit" class="btn btn-priary">Submit</button>
+            </div>
+        </form>
+    </div>
+    <div class="response">
+        <p>
+            @Model.Transcript
+        </p>
+    </div>
+</div>
